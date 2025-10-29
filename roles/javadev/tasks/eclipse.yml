@@ -1,0 +1,6 @@
+---
+- name: Install Eclipse via snap
+  snap:
+    name: eclipse
+    state: present
+    classic: yes

@@ -1,0 +1,2 @@
+jdk_package: "openjdk-21-jdk"  # override per distro if needed
+install_eclipse: true

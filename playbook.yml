@@ -1,8 +1,9 @@
----
-- name: Setup developer workstation on Ubuntu 24.04
+- name: Setup developer workstation
   hosts: localhost
   become: yes
 
   roles:
-    - role: javadev
-    - role: webdev
+  - role: javadev
+    tags: ['javadev','dev-install']
+  - role: webdev
+    tags: ['webdev','dev-install']

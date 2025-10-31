@@ -1,5 +1,5 @@
----
-- name: Install Git
-  apt:
+- name: Install Git (cross-distro)
+  package:
     name: git
     state: present
+  tags: ['base','git']

@@ -1,5 +1,10 @@
----
-- name: Install latest OpenJDK
-  apt:
-    name: openjdk-21-jdk
+- name: Ensure JDK package variable is set (defaults may override)
+  set_fact:
+    jdk_pkg: "{{ jdk_package | default('openjdk-21-jdk') }}"
+  tags: ['javadev','jdk']
+
+- name: Install OpenJDK (cross-distro using package)
+  package:
+    name: "{{ jdk_package }}"
     state: present
+  tags: ['javadev','jdk']

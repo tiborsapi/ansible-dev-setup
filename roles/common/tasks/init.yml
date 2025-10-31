@@ -1,5 +1,13 @@
----
-- name: Update apt cache and upgrade packages
+- name: Update apt cache and upgrade packages (Debian family)
   apt:
     update_cache: yes
     upgrade: dist
+  when: ansible_facts['os_family'] == 'Debian'
+  tags: ['base','update']
+
+- name: Update package metadata (RedHat family)
+  dnf:
+    name: '*'
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+  tags: ['base','update']

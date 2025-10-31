@@ -1,0 +1,57 @@
+- name: Install prerequisites
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - gnupg
+  tags:
+  - webdev
+
+- name: Download NodeSource setup script
+  get_url:
+    url: https://deb.nodesource.com/setup_20.x
+    dest: /tmp/nodesource_setup.sh
+    mode: '0755'
+  when: ansible_os_family == "Debian"
+  tags:
+  - webdev
+  
+- name: Run NodeSource setup script
+  command: bash /tmp/nodesource_setup.sh
+  args:
+    creates: /etc/apt/sources.list.d/nodesource.list
+  when: ansible_os_family == "Debian"
+  tags:
+  - webdev
+
+- name: Install Node.js
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags:
+  - webdev
+
+- name: Add NodeSource repo (RHEL/CentOS/Fedora)
+  get_url:
+    url: https://rpm.nodesource.com/setup_20.x
+    dest: /tmp/nodesource_setup.sh
+    mode: '0755'
+  when: ansible_os_family == "RedHat"
+  tags:
+  - webdev
+
+- name: Run NodeSource setup script (RHEL/CentOS/Fedora)
+  command: bash /tmp/nodesource_setup.sh
+  when: ansible_os_family == "RedHat"
+  tags:
+  - webdev
+
+- name: Install Node.js
+  package:
+    name: nodejs
+    state: present
+  tags:
+  - webdev

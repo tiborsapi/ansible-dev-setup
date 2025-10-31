@@ -1,0 +1,10 @@
+- name: Get dpkg architecture
+  command: dpkg --print-architecture
+  register: dpkg_arch
+  changed_when: false
+- name: Import init setup tasks
+  import_tasks: init.yml
+- name: Import git setup tasks
+  import_tasks: git.yml
+- name: Import docker setup tasks
+  import_tasks: docker.yml

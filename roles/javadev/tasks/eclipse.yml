@@ -4,10 +4,12 @@
     state: present
     classic: yes
   when: install_eclipse | bool
-  tags: ['javadev','eclipse']
+  tags: 
+  - javadev
 
 - name: Skip Eclipse installation on systems without snap unless configured
   debug:
     msg: "Eclipse installation skipped (install_eclipse is false or snap not available)."
   when: not (install_eclipse | bool)
-  tags: ['javadev','eclipse','skip']
+  tags: 
+  - javadev

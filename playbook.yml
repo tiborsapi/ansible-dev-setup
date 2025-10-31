@@ -1,8 +1,14 @@
 - name: Setup developer workstation (generic)
-  hosts: localhost
-  become: yes
+  hosts:
+  - 127.0.0.1
+  - localhost
+
+  connection: local
 
   roles:
+  - role: common
+    tags:
+    - always
   - role: javadev
     tags:
     - javadev

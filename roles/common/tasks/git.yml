@@ -2,4 +2,6 @@
   package:
     name: git
     state: present
-  tags: ['base','git']
+  tags:
+  - always
+

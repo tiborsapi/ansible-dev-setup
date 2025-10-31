@@ -1,0 +1,115 @@
+- name: Install required packages (Debian/Ubuntu)
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags:
+  - always
+
+- name: Install required packages (RedHat/CentOS/Fedora)
+  package:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags:
+  - always
+
+- name: Install required packages (SUSE)
+  zypper:
+    name:
+      - curl
+      - ca-certificates
+    state: present
+  when: ansible_os_family == "Suse"
+  tags:
+  - always
+
+- name: Ensure Docker keyring directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags:
+  - always
+
+- name: Download Docker GPG key
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.gpg
+    mode: '0644'
+  tags:
+  - always
+
+- name: Remove old Docker repo definitions
+  file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
+  when: ansible_os_family == "Debian"
+  tags:
+  - always
+
+- name: Update apt cache and upgrade packages (Debian family)
+  apt:
+    update_cache: yes
+    upgrade: dist
+  when: ansible_facts['os_family'] == 'Debian'
+  tags:
+  - always
+
+- name: Add Docker repository
+  apt_repository:
+    repo: "deb [arch={{ dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  tags:
+  - always
+
+- name: Add Docker repository (RedHat/CentOS/Fedora)
+  yum_repository:
+    name: docker-ce
+    description: Docker CE Stable - $releasever
+    baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    enabled: yes
+  when: ansible_os_family == "RedHat"
+  tags:
+  - always
+
+- name: Add Docker repository (SUSE)
+  zypper_repository:
+    name: docker-ce
+    description: Docker CE Stable
+    repo: https://download.docker.com/linux/sles/docker-ce.repo
+    auto_import_keys: yes
+    state: present
+  when: ansible_os_family == "Suse"
+  tags:
+  - always
+
+- name: Install Docker CE
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  tags:
+  - always
+
+- name: Ensure Docker service is running
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  tags:
+  - always

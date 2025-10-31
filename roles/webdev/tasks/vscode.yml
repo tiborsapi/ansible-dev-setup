@@ -1,0 +1,53 @@
+- name: Add Microsoft GPG key (Debian/Ubuntu)
+  apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+  - webdev
+
+- name: Remove old VSCode repo definitions
+  file:
+    path: /etc/apt/sources.list.d/vscode.list
+    state: absent
+  when: ansible_os_family == "Debian"
+  tags:
+  - webdev
+
+- name: Add VSCode repo (Debian/Ubuntu)
+  apt_repository:
+    repo: "deb [arch={{ dpkg_arch.stdout }}] https://packages.microsoft.com/repos/vscode stable main"
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+  - webdev
+
+- name: Add VSCode repo (RHEL/CentOS/Fedora)
+  yum_repository:
+    name: vscode
+    description: Visual Studio Code
+    baseurl: https://packages.microsoft.com/yumrepos/vscode
+    gpgcheck: yes
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    enabled: yes
+  when: ansible_os_family == "RedHat"
+  tags:
+  - webdev
+
+- name: Add VSCode repo (openSUSE)
+  zypper_repository:
+    name: vscode
+    description: Visual Studio Code
+    repo: https://packages.microsoft.com/yumrepos/vscode
+    auto_import_keys: yes
+    state: present
+  when: ansible_os_family == "Suse"
+  tags:
+  - webdev
+
+- name: Install VSCode
+  package:
+    name: code
+    state: present
+  tags:
+  - webdev

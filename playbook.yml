@@ -4,6 +4,11 @@
 
   roles:
     - role: javadev
-      tags: ['javadev', 'dev-install']
+      tags:
+        - javadev
+        - dev-install
+
     - role: webdev
-      tags: ['webdev', 'dev-install']
+      tags:
+        - webdev
+        - dev-install

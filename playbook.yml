@@ -3,12 +3,11 @@
   become: yes
 
   roles:
-    - role: javadev
-      tags:
-        - javadev
-        - dev-install
-
-    - role: webdev
-      tags:
-        - webdev
-        - dev-install
+  - role: javadev
+    tags:
+    - javadev
+    - dev-install
+  - role: webdev
+    tags:
+    - webdev
+    - dev-install
